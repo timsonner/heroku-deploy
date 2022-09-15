@@ -155,6 +155,7 @@ const reset = () => {
     renderPlayerDuo()
     drawBtn.classList.remove('hide')
     compDuoHeader.classList.add('hide')
+    allBotsDiv.innerHTML = '' // don't show all bots on reload
 }
 
 const getPlayerStats = () => {
@@ -165,16 +166,23 @@ const getPlayerStats = () => {
         })
 }
 
+let isShowingAllBots = false  // turns true on first click of 'Show all bots.'
 const getAllBots = () => {
-    axios.get('/api/robots')
-        .then(({data}) => {
-            allBotsDiv.innerHTML = ''
+    isShowingAllBots = !isShowingAllBots // toggle()
+    // isShowingAllBots is true
+    if (isShowingAllBots) {
+        axios.get('/api/robots')
+            .then(({ data }) => {
+                allBotsDiv.innerHTML = ''
         
-            data.forEach(bot => {
-                let botHtml = makeRobotDisplayCard(bot)
-                allBotsDiv.innerHTML += botHtml
+                data.forEach(bot => {
+                    let botHtml = makeRobotDisplayCard(bot)
+                    allBotsDiv.innerHTML += botHtml
+                })
             })
-        })
+    } else {
+        allBotsDiv.innerHTML = '' // isShowingAllBots is false
+    }
 }
 
 drawBtn.addEventListener('click', drawFive)
